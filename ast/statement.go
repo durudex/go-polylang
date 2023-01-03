@@ -15,6 +15,7 @@ type Statement struct {
 type CompoundStatement struct {
 	If    *If    `parser:"@@"`
 	While *While `parser:"| @@"`
+	For   *For   `parser:"| @@"`
 }
 
 type SimpleStatement struct {
@@ -24,14 +25,15 @@ type SimpleStatement struct {
 type SmallStatement struct {
 	Break      bool        `parser:"( @'break'? )!"`
 	Throw      *Expression `parser:"| 'throw' @@"`
+	Let        *Let        `parser:"| @@"`
 	Expression *Expression `parser:"| @@"`
 }
 
 type Expression struct {
-	Left       string      `parser:"@( Ident | String )"`
+	Left       string      `parser:"@( Ident | String | Number )"`
 	Operator   Operator    `parser:"( @@ )?"`
 	Expression *Expression `parser:"( '(' @@ ')' )?"`
-	Right      string      `parser:"( @( Ident | String ) )?"`
+	Right      string      `parser:"( @( Ident | String | Number ) )?"`
 }
 
 type If struct {
@@ -42,5 +44,17 @@ type If struct {
 
 type While struct {
 	Condition  *Expression  `parser:"'while' '(' @@ ')'"`
+	Statements []*Statement `parser:"'{' @@* '}'"`
+}
+
+type Let struct {
+	Ident      string      `parser:"'let' @Ident '='"`
+	Expression *Expression `parser:"@@"`
+}
+
+type For struct {
+	Let        *Let         `parser:"'for' '(' @@ ';'"`
+	Condition  *Expression  `parser:"@@ ';'"`
+	Post       *Expression  `parser:"@@ ')'"`
 	Statements []*Statement `parser:"'{' @@* '}'"`
 }
