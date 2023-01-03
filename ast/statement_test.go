@@ -33,6 +33,18 @@ func Test_SmallStatement(t *testing.T) {
 			code: "break",
 			want: &ast.SmallStatement{Break: true},
 		},
+		{
+			name: "Throw",
+			code: "throw error('error message')",
+			want: &ast.SmallStatement{
+				Throw: &ast.Expression{
+					Left: "error",
+					Expression: &ast.Expression{
+						Left: "'error message'",
+					},
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
