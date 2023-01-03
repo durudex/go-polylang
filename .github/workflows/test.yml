@@ -1,0 +1,27 @@
+# Copyright © 2022-2023 Durudex
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  go-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run Unit Tests
+        run: go test --short ./...
