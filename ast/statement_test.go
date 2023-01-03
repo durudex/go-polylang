@@ -211,3 +211,92 @@ func Test_While(t *testing.T) {
 		})
 	}
 }
+
+func Test_Let(t *testing.T) {
+	parser := participle.MustBuild[ast.Let](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	tests := []struct {
+		name string
+		code string
+		want *ast.Let
+	}{
+		{
+			name: "OK",
+			code: "let i = 10",
+			want: &ast.Let{
+				Ident:      "i",
+				Expression: &ast.Expression{Left: "10"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parser.Parse("", strings.NewReader(tt.code))
+			if err != nil {
+				t.Fatal("error: parsing polylang code: ", err)
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatal("error: let statement does not match")
+			}
+		})
+	}
+}
+
+func Test_For(t *testing.T) {
+	parser := participle.MustBuild[ast.For](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	tests := []struct {
+		name string
+		code string
+		want *ast.For
+	}{
+		{
+			name: "OK",
+			code: "for (let i = 0; i < 100; i + 1) { break; }",
+			want: &ast.For{
+				Let: &ast.Let{
+					Ident:      "i",
+					Expression: &ast.Expression{Left: "0"},
+				},
+				Condition: &ast.Expression{
+					Left:     "i",
+					Operator: ast.LessThan,
+					Right:    "100",
+				},
+				Post: &ast.Expression{
+					Left:     "i",
+					Operator: ast.Add,
+					Right:    "1",
+				},
+				Statements: []*ast.Statement{
+					{
+						SimpleStatement: ast.SimpleStatement{
+							Small: &ast.SmallStatement{
+								Break: true,
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parser.Parse("", strings.NewReader(tt.code))
+			if err != nil {
+				t.Fatal("error: parsing polylang code: ", err)
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatal("error: for statement does not match")
+			}
+		})
+	}
+}
