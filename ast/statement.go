@@ -32,7 +32,7 @@ type SmallStatement struct {
 type Expression struct {
 	Left       string      `parser:"@( Ident | String | Number )"`
 	Operator   Operator    `parser:"( @@ )?"`
-	Expression *Expression `parser:"( '(' @@ ')' )?"`
+	Expression *Expression `parser:"( '(' ( @@ )? ')' )?"`
 	Right      string      `parser:"( @( Ident | String | Number ) )?"`
 }
 
@@ -53,8 +53,13 @@ type Let struct {
 }
 
 type For struct {
-	Let        *Let         `parser:"'for' '(' @@ ';'"`
+	Initial    *ForInitial  `parser:"'for' '(' @@ ';'"`
 	Condition  *Expression  `parser:"@@ ';'"`
 	Post       *Expression  `parser:"@@ ')'"`
 	Statements []*Statement `parser:"'{' @@* '}'"`
+}
+
+type ForInitial struct {
+	Let        *Let        `parser:"@@"`
+	Expression *Expression `parser:"| @@"`
 }
