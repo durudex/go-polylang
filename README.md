@@ -23,9 +23,9 @@ import (
 )
 
 func main() {
-	parser := participle.MustBuild[ast.Program](
-		participle.Lexer(polylang.Lexer),
-	)
+    parser := participle.MustBuild[ast.Program](
+        participle.Lexer(polylang.Lexer),
+    )
 
     ...
 }
