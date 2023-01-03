@@ -18,6 +18,37 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
+func Test_SmallStatement(t *testing.T) {
+	parser := participle.MustBuild[ast.SmallStatement](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	tests := []struct {
+		name string
+		code string
+		want *ast.SmallStatement
+	}{
+		{
+			name: "Break",
+			code: "break",
+			want: &ast.SmallStatement{Break: true},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parser.Parse("", strings.NewReader(tt.code))
+			if err != nil {
+				t.Fatal("error: parsing polylang code: ", err)
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatal("error: small statement does not match")
+			}
+		})
+	}
+}
+
 func Test_Expression(t *testing.T) {
 	parser := participle.MustBuild[ast.Expression](
 		participle.Lexer(polylang.Lexer),
