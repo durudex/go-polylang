@@ -13,5 +13,6 @@ var Lexer = lexer.MustSimple([]lexer.SimpleRule{
 	{Name: "Ident", Pattern: `[a-zA-Z_.][a-zA-Z0-9_.]*`},
 	{Name: "String", Pattern: `'[^']*'`},
 	{Name: "Punct", Pattern: `\[|]|[,:;={}()?!@]`},
+	{Name: "comment", Pattern: `//.*|/\*.*?\*/`},
 	{Name: "whitespace", Pattern: `\s+`},
 })
