@@ -7,8 +7,6 @@
 
 package ast
 
-import "github.com/alecthomas/participle/v2/lexer"
-
 type Statement struct {
 	CompoundStatement
 	SimpleStatement
@@ -28,8 +26,6 @@ type SmallStatement struct {
 }
 
 type Expression struct {
-	Pos lexer.Position
-
 	Left       string      `parser:"@( Ident | String )"`
 	Operator   Operator    `parser:"( @@ )?"`
 	Expression *Expression `parser:"( '(' @@ ')' )?"`
@@ -37,8 +33,6 @@ type Expression struct {
 }
 
 type If struct {
-	Pos lexer.Position
-
 	Condition  *Expression  `parser:"'if' '(' @@ ')'"`
 	Statements []*Statement `parser:"'{' @@* '}'"`
 	Else       []*Statement `parser:"( 'else' '{' @@* '}' )?"`

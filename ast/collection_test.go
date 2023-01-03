@@ -16,7 +16,6 @@ import (
 	"github.com/durudex/go-polylang/ast"
 
 	"github.com/alecthomas/participle/v2"
-	"github.com/alecthomas/participle/v2/lexer"
 )
 
 func Test_Field(t *testing.T) {
@@ -33,7 +32,6 @@ func Test_Field(t *testing.T) {
 			name: "OK",
 			code: "id: string",
 			want: &ast.Field{
-				Pos:  lexer.Position{Line: 1, Column: 1},
 				Name: "id",
 				Type: "string",
 			},
@@ -42,7 +40,6 @@ func Test_Field(t *testing.T) {
 			name: "Optional Field",
 			code: "name?: string",
 			want: &ast.Field{
-				Pos:      lexer.Position{Line: 1, Column: 1},
 				Name:     "name",
 				Optional: true,
 				Type:     "string",
@@ -77,17 +74,12 @@ func Test_Index(t *testing.T) {
 		{
 			name: "OK",
 			code: "@index()",
-			want: &ast.Index{
-				Pos: lexer.Position{Line: 1, Column: 1},
-			},
+			want: &ast.Index{},
 		},
 		{
 			name: "Unique",
 			code: "@unique()",
-			want: &ast.Index{
-				Pos:    lexer.Position{Line: 1, Column: 1},
-				Unique: true,
-			},
+			want: &ast.Index{Unique: true},
 		},
 	}
 
@@ -119,7 +111,6 @@ func Test_IndexField(t *testing.T) {
 			name: "OK",
 			code: "[id, desc]",
 			want: &ast.IndexField{
-				Pos:   lexer.Position{Line: 1, Column: 1},
 				Name:  "id",
 				Order: ast.Desc,
 			},
@@ -128,7 +119,6 @@ func Test_IndexField(t *testing.T) {
 			name: "Simple Field",
 			code: "id",
 			want: &ast.IndexField{
-				Pos:   lexer.Position{Line: 1, Column: 1},
 				Name:  "id",
 				Order: ast.Asc,
 			},
@@ -162,16 +152,12 @@ func Test_Function(t *testing.T) {
 		{
 			name: "OK",
 			code: "function Test() {}",
-			want: &ast.Function{
-				Pos:  lexer.Position{Line: 1, Column: 1},
-				Name: "Test",
-			},
+			want: &ast.Function{Name: "Test"},
 		},
 		{
 			name: "Return Type",
 			code: "function Test(): string {}",
 			want: &ast.Function{
-				Pos:        lexer.Position{Line: 1, Column: 1},
 				Name:       "Test",
 				ReturnType: "string",
 			},
