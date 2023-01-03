@@ -13,7 +13,8 @@ type Statement struct {
 }
 
 type CompoundStatement struct {
-	If *If `parser:"@@"`
+	If    *If    `parser:"@@"`
+	While *While `parser:"| @@"`
 }
 
 type SimpleStatement struct {
@@ -37,4 +38,9 @@ type If struct {
 	Condition  *Expression  `parser:"'if' '(' @@ ')'"`
 	Statements []*Statement `parser:"'{' @@* '}'"`
 	Else       []*Statement `parser:"( 'else' '{' @@* '}' )?"`
+}
+
+type While struct {
+	Condition  *Expression  `parser:"'while' '(' @@ ')'"`
+	Statements []*Statement `parser:"'{' @@* '}'"`
 }

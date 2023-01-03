@@ -165,3 +165,49 @@ func Test_If(t *testing.T) {
 		})
 	}
 }
+
+func Test_While(t *testing.T) {
+	parser := participle.MustBuild[ast.While](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	tests := []struct {
+		name string
+		code string
+		want *ast.While
+	}{
+		{
+			name: "OK",
+			code: "while (this.balance < balance) { break; }",
+			want: &ast.While{
+				Condition: &ast.Expression{
+					Left:     "this.balance",
+					Operator: ast.LessThan,
+					Right:    "balance",
+				},
+				Statements: []*ast.Statement{
+					{
+						SimpleStatement: ast.SimpleStatement{
+							Small: &ast.SmallStatement{
+								Break: true,
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parser.Parse("", strings.NewReader(tt.code))
+			if err != nil {
+				t.Fatal("error: parsing polylang code: ", err)
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatal("error: while statement does not match")
+			}
+		})
+	}
+}
