@@ -21,7 +21,8 @@ type SimpleStatement struct {
 }
 
 type SmallStatement struct {
-	Throw      *Expression `parser:"'throw' @@"`
+	Break      bool        `parser:"( @'break'? )!"`
+	Throw      *Expression `parser:"| 'throw' @@"`
 	Expression *Expression `parser:"| @@"`
 }
 
