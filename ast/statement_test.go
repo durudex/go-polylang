@@ -260,9 +260,13 @@ func Test_For(t *testing.T) {
 			name: "OK",
 			code: "for (let i = 0; i < 100; i + 1) { break; }",
 			want: &ast.For{
-				Let: &ast.Let{
-					Ident:      "i",
-					Expression: &ast.Expression{Left: "0"},
+				Initial: &ast.ForInitial{
+					Let: &ast.Let{
+						Ident: "i",
+						Expression: &ast.Expression{
+							Left: "0",
+						},
+					},
 				},
 				Condition: &ast.Expression{
 					Left:     "i",

@@ -8,6 +8,7 @@
 package ast_test
 
 import (
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -17,6 +18,114 @@ import (
 
 	"github.com/alecthomas/participle/v2"
 )
+
+func Test_Collection(t *testing.T) {
+	parser := participle.MustBuild[ast.Collection](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	tests := []struct {
+		name string
+		file string
+		want *ast.Collection
+	}{
+		{
+			name: "OK",
+			file: "fixtures/article.polylang",
+			want: &ast.Collection{
+				Name: "Article",
+				Items: []*ast.Item{
+					{
+						Field: &ast.Field{
+							Name: "id",
+							Type: "string",
+						},
+					},
+					{
+						Field: &ast.Field{
+							Name: "title",
+							Type: "string",
+						},
+					},
+					{
+						Function: &ast.Function{
+							Name: "constructor",
+							Parameters: []*ast.Field{
+								{
+									Name: "id",
+									Type: "string",
+								},
+								{
+									Name: "title",
+									Type: "string",
+								},
+							},
+							Statements: []*ast.Statement{
+								{
+									SimpleStatement: ast.SimpleStatement{
+										Small: &ast.SmallStatement{
+											Expression: &ast.Expression{
+												Left:     "this.id",
+												Operator: ast.Assign,
+												Right:    "id",
+											},
+										},
+									},
+								},
+								{
+									SimpleStatement: ast.SimpleStatement{
+										Small: &ast.SmallStatement{
+											Expression: &ast.Expression{
+												Left:     "this.title",
+												Operator: ast.Assign,
+												Right:    "title",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					{
+						Function: &ast.Function{
+							Name: "del",
+							Statements: []*ast.Statement{
+								{
+									SimpleStatement: ast.SimpleStatement{
+										Small: &ast.SmallStatement{
+											Expression: &ast.Expression{
+												Left: "selfdestruct",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f, err := os.Open(tt.file)
+			if err != nil {
+				t.Fatal("error: opening fixtures file: ", err)
+			}
+			defer f.Close()
+
+			got, err := parser.Parse("", f)
+			if err != nil {
+				t.Fatal("error: parsing polylang code: ", err)
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatal("error: collection does not match")
+			}
+		})
+	}
+}
 
 func Test_Field(t *testing.T) {
 	parser := participle.MustBuild[ast.Field](

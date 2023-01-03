@@ -1,0 +1,11 @@
+collection Article {
+    id: string;
+    title: string;
+
+    function constructor(id: string, title: string) {
+        this.id = id;
+        this.title = title;
+    }
+
+    function del() { selfdestruct(); }
+}
