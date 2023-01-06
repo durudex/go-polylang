@@ -185,11 +185,6 @@ func Test_Index(t *testing.T) {
 			code: "@index()",
 			want: &ast.Index{},
 		},
-		{
-			name: "Unique",
-			code: "@unique()",
-			want: &ast.Index{Unique: true},
-		},
 	}
 
 	for _, tt := range tests {

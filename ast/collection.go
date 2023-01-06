@@ -25,8 +25,7 @@ type Field struct {
 }
 
 type Index struct {
-	Unique bool          `parser:"'@' ( @'unique' | 'index' )"`
-	Fields []*IndexField `parser:"'(' ( @@ ( ',' @@ )* )? ')'"`
+	Fields []*IndexField `parser:"'@' 'index' '(' ( @@ ( ',' @@ )* )? ')'"`
 }
 
 type IndexField struct {
