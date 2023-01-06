@@ -13,14 +13,15 @@ import (
 )
 
 type Type struct {
-	Type   BasicType `parser:"@@"`
+	Array  BasicType `parser:"@@ '[' ']'"`
+	Type   BasicType `parser:"| @@"`
 	Object []*Field  `parser:"| '{' ( ( @@ ';' )* )? '}'"`
 }
 
 type BasicType int
 
 const (
-	String BasicType = iota
+	String BasicType = iota + 1
 	Number
 	Boolean
 )
