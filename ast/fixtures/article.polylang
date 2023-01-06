@@ -1,6 +1,10 @@
 collection Article {
     id: string;
     title: string;
+    info: {
+        author: string;
+        sponsor?: string;
+    };
 
     function constructor(id: string, title: string) {
         this.id = id;

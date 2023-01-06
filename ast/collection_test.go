@@ -38,13 +38,31 @@ func Test_Collection(t *testing.T) {
 					{
 						Field: &ast.Field{
 							Name: "id",
-							Type: "string",
+							Type: ast.Type{Type: ast.String},
 						},
 					},
 					{
 						Field: &ast.Field{
 							Name: "title",
-							Type: "string",
+							Type: ast.Type{Type: ast.String},
+						},
+					},
+					{
+						Field: &ast.Field{
+							Name: "info",
+							Type: ast.Type{
+								Object: []*ast.Field{
+									{
+										Name: "author",
+										Type: ast.Type{Type: ast.String},
+									},
+									{
+										Name:     "sponsor",
+										Optional: true,
+										Type:     ast.Type{Type: ast.String},
+									},
+								},
+							},
 						},
 					},
 					{
@@ -53,11 +71,11 @@ func Test_Collection(t *testing.T) {
 							Parameters: []*ast.Field{
 								{
 									Name: "id",
-									Type: "string",
+									Type: ast.Type{Type: ast.String},
 								},
 								{
 									Name: "title",
-									Type: "string",
+									Type: ast.Type{Type: ast.String},
 								},
 							},
 							Statements: []*ast.Statement{
@@ -142,7 +160,7 @@ func Test_Field(t *testing.T) {
 			code: "id: string",
 			want: &ast.Field{
 				Name: "id",
-				Type: "string",
+				Type: ast.Type{Type: ast.String},
 			},
 		},
 		{
@@ -151,7 +169,7 @@ func Test_Field(t *testing.T) {
 			want: &ast.Field{
 				Name:     "name",
 				Optional: true,
-				Type:     "string",
+				Type:     ast.Type{Type: ast.String},
 			},
 		},
 	}
@@ -263,7 +281,7 @@ func Test_Function(t *testing.T) {
 			code: "function Test(): string {}",
 			want: &ast.Function{
 				Name:       "Test",
-				ReturnType: "string",
+				ReturnType: ast.Type{Type: ast.String},
 			},
 		},
 	}
