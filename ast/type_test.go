@@ -39,6 +39,16 @@ func Test_Type(t *testing.T) {
 			want: &ast.Type{Array: ast.String},
 		},
 		{
+			name: "Map",
+			code: "map<string, number>",
+			want: &ast.Type{
+				Map: &ast.Map{
+					Key:   ast.String,
+					Value: ast.Type{Type: ast.Number},
+				},
+			},
+		},
+		{
 			name: "Object",
 			code: "{name: string; website?: string;}",
 			want: &ast.Type{
