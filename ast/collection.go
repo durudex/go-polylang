@@ -21,7 +21,7 @@ type Item struct {
 type Field struct {
 	Name     string `parser:"@Ident"`
 	Optional bool   `parser:"@'?'?"`
-	Type     string `parser:"':' @Ident"`
+	Type     Type   `parser:"':' @@"`
 }
 
 type Index struct {
@@ -36,6 +36,6 @@ type IndexField struct {
 type Function struct {
 	Name       string       `parser:"'function' @Ident '('"`
 	Parameters []*Field     `parser:"( @@ ( ',' @@ )* )? ')'"`
-	ReturnType string       `parser:"( ':' @Ident )?"`
+	ReturnType Type         `parser:"( ':' @@ )?"`
 	Statements []*Statement `parser:"'{' ( @@* )? '}'"`
 }
