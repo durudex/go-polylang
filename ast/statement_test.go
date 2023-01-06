@@ -34,6 +34,17 @@ func Test_SmallStatement(t *testing.T) {
 			want: &ast.SmallStatement{Break: true},
 		},
 		{
+			name: "Return",
+			code: "return this.name == name",
+			want: &ast.SmallStatement{
+				Return: &ast.Expression{
+					Left:     "this.name",
+					Operator: ast.Equal,
+					Right:    "name",
+				},
+			},
+		},
+		{
 			name: "Throw",
 			code: "throw error('error message')",
 			want: &ast.SmallStatement{
