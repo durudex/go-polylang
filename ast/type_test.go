@@ -34,6 +34,11 @@ func Test_Type(t *testing.T) {
 			want: &ast.Type{Type: ast.String},
 		},
 		{
+			name: "Array",
+			code: "string[]",
+			want: &ast.Type{Array: ast.String},
+		},
+		{
 			name: "Object",
 			code: "{name: string; website?: string;}",
 			want: &ast.Type{
