@@ -12,12 +12,6 @@ import (
 	"github.com/alecthomas/participle/v2/lexer"
 )
 
-type Type struct {
-	Array  BasicType `parser:"@@ '[' ']'"`
-	Type   BasicType `parser:"| @@"`
-	Object []*Field  `parser:"| '{' ( ( @@ ';' )* )? '}'"`
-}
-
 type BasicType int
 
 const (
@@ -30,6 +24,18 @@ var (
 	typeToString = map[BasicType]string{String: "string", Number: "number", Boolean: "boolean"}
 	stringToType = map[string]BasicType{"string": String, "number": Number, "boolean": Boolean}
 )
+
+type Type struct {
+	Array  BasicType `parser:"@@ '[' ']'"`
+	Type   BasicType `parser:"| @@"`
+	Map    *Map      `parser:"| @@"`
+	Object []*Field  `parser:"| '{' ( ( @@ ';' )* )? '}'"`
+}
+
+type Map struct {
+	Key   BasicType `parser:"'map' '<' @@ ','"`
+	Value Type      `parser:"@@ '>'"`
+}
 
 func (t BasicType) GoString() string { return typeToString[t] }
 
