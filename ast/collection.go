@@ -34,7 +34,7 @@ type IndexField struct {
 }
 
 type Function struct {
-	Name       string       `parser:"'function' @Ident '('"`
+	Name       string       `parser:"( 'function' )? @Ident '('"`
 	Parameters []*Field     `parser:"( @@ ( ',' @@ )* )? ')'"`
 	ReturnType Type         `parser:"( ':' @@ )?"`
 	Statements []*Statement `parser:"'{' ( @@* )? '}'"`
