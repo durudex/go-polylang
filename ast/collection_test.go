@@ -273,16 +273,21 @@ func Test_Function(t *testing.T) {
 	}{
 		{
 			name: "OK",
-			code: "function Test() {}",
-			want: &ast.Function{Name: "Test"},
+			code: "function test() {}",
+			want: &ast.Function{Name: "test"},
 		},
 		{
 			name: "Return Type",
-			code: "function Test(): string {}",
+			code: "function test(): string {}",
 			want: &ast.Function{
-				Name:       "Test",
+				Name:       "test",
 				ReturnType: ast.Type{Type: ast.String},
 			},
+		},
+		{
+			name: "Short",
+			code: "test() {}",
+			want: &ast.Function{Name: "test"},
 		},
 	}
 
