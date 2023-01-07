@@ -26,7 +26,7 @@ var (
 )
 
 type Type struct {
-	Type   BasicType `parser:"@@"`
+	Basic  BasicType `parser:"@@"`
 	Array  bool      `parser:"@( '[' ']' )?"`
 	Map    *Map      `parser:"| @@"`
 	Object []*Field  `parser:"| '{' ( ( @@ ';' )* )? '}'"`

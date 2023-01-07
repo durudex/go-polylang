@@ -31,12 +31,12 @@ func Test_Type(t *testing.T) {
 		{
 			name: "OK",
 			code: "string",
-			want: &ast.Type{Type: ast.String},
+			want: &ast.Type{Basic: ast.String},
 		},
 		{
 			name: "Array",
 			code: "string[]",
-			want: &ast.Type{Type: ast.String, Array: true},
+			want: &ast.Type{Basic: ast.String, Array: true},
 		},
 		{
 			name: "Map",
@@ -44,7 +44,7 @@ func Test_Type(t *testing.T) {
 			want: &ast.Type{
 				Map: &ast.Map{
 					Key:   ast.String,
-					Value: ast.Type{Type: ast.Number},
+					Value: ast.Type{Basic: ast.Number},
 				},
 			},
 		},
@@ -55,12 +55,12 @@ func Test_Type(t *testing.T) {
 				Object: []*ast.Field{
 					{
 						Name: "name",
-						Type: ast.Type{Type: ast.String},
+						Type: ast.Type{Basic: ast.String},
 					},
 					{
 						Name:     "website",
 						Optional: true,
-						Type:     ast.Type{Type: ast.String},
+						Type:     ast.Type{Basic: ast.String},
 					},
 				},
 			},
