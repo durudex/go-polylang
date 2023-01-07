@@ -67,8 +67,7 @@ const code = " ... "
 func main() {
     ...
 
-    r := strings.NewReader(code)
-    ast, err := parser.Parse("", r)
+    ast, err := parser.ParseString("", code)
 }
 ```
 

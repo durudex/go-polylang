@@ -9,7 +9,6 @@ package ast_test
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/durudex/go-polylang"
@@ -60,7 +59,7 @@ func Test_SmallStatement(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.Parse("", strings.NewReader(tt.code))
+			got, err := parser.ParseString("", tt.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
@@ -95,7 +94,7 @@ func Test_Expression(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.Parse("", strings.NewReader(tt.code))
+			got, err := parser.ParseString("", tt.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
@@ -165,7 +164,7 @@ func Test_If(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.Parse("", strings.NewReader(tt.code))
+			got, err := parser.ParseString("", tt.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
@@ -211,7 +210,7 @@ func Test_While(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.Parse("", strings.NewReader(tt.code))
+			got, err := parser.ParseString("", tt.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
@@ -245,7 +244,7 @@ func Test_Let(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.Parse("", strings.NewReader(tt.code))
+			got, err := parser.ParseString("", tt.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
@@ -304,7 +303,7 @@ func Test_For(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.Parse("", strings.NewReader(tt.code))
+			got, err := parser.ParseString("", tt.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
