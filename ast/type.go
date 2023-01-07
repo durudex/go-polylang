@@ -26,8 +26,8 @@ var (
 )
 
 type Type struct {
-	Array  BasicType `parser:"@@ '[' ']'"`
-	Type   BasicType `parser:"| @@"`
+	Type   BasicType `parser:"@@"`
+	Array  bool      `parser:"@( '[' ']' )?"`
 	Map    *Map      `parser:"| @@"`
 	Object []*Field  `parser:"| '{' ( ( @@ ';' )* )? '}'"`
 }
@@ -37,7 +37,7 @@ type Map struct {
 	Value Type      `parser:"@@ '>'"`
 }
 
-func (t BasicType) GoString() string { return typeToString[t] }
+func (t BasicType) String() string { return typeToString[t] }
 
 func (t *BasicType) Parse(lex *lexer.PeekingLexer) error {
 	token := lex.Peek()
