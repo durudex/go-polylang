@@ -56,7 +56,7 @@ var (
 	}
 )
 
-func (o Operator) GoString() string { return operatorToString[o] }
+func (o Operator) String() string { return operatorToString[o] }
 
 func (o *Operator) Parse(lex *lexer.PeekingLexer) error {
 	token := lex.Peek()

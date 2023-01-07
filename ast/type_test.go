@@ -36,7 +36,7 @@ func Test_Type(t *testing.T) {
 		{
 			name: "Array",
 			code: "string[]",
-			want: &ast.Type{Array: ast.String},
+			want: &ast.Type{Type: ast.String, Array: true},
 		},
 		{
 			name: "Map",

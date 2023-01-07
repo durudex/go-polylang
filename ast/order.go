@@ -24,7 +24,7 @@ var (
 	stringToOrder = map[string]Order{"asc": Asc, "desc": Desc}
 )
 
-func (o Order) GoString() string { return orderToString[o] }
+func (o Order) String() string { return orderToString[o] }
 
 func (o *Order) Parse(lex *lexer.PeekingLexer) error {
 	token := lex.Peek()
