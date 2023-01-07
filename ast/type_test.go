@@ -9,7 +9,6 @@ package ast_test
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/durudex/go-polylang"
@@ -69,7 +68,7 @@ func Test_Type(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.Parse("", strings.NewReader(tt.code))
+			got, err := parser.ParseString("", tt.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
