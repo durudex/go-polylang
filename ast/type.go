@@ -18,18 +18,24 @@ const (
 	String BasicType = iota + 1
 	Number
 	Boolean
+	Record
 )
 
 var (
-	typeToString = map[BasicType]string{String: "string", Number: "number", Boolean: "boolean"}
-	stringToType = map[string]BasicType{"string": String, "number": Number, "boolean": Boolean}
+	typeToString = map[BasicType]string{
+		String: "string", Number: "number", Boolean: "boolean", Record: "record",
+	}
+	stringToType = map[string]BasicType{
+		"string": String, "number": Number, "boolean": Boolean, "record": Record,
+	}
 )
 
 type Type struct {
-	Basic  BasicType `parser:"@@"`
-	Array  bool      `parser:"@( '[' ']' )?"`
-	Map    *Map      `parser:"| @@"`
-	Object []*Field  `parser:"| '{' ( ( @@ ';' )* )? '}'"`
+	Basic   BasicType `parser:"@@"`
+	Array   bool      `parser:"@( '[' ']' )?"`
+	Map     *Map      `parser:"| @@"`
+	Object  []*Field  `parser:"| '{' ( ( @@ ';' )* )? '}'"`
+	Foreign string    `parser:"| @Ident"`
 }
 
 type Map struct {

@@ -64,6 +64,11 @@ func Test_Type(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "Foreign",
+			code: "ForeignCollection",
+			want: &ast.Type{Foreign: "ForeignCollection"},
+		},
 	}
 
 	for _, tt := range tests {
