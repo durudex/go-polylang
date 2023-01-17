@@ -56,11 +56,7 @@ func main() {
 **Parse string:**
 
 ```go
-import (
-    "strings"
-
-    ...
-)
+import ( ... )
 
 const code = " ... "
 
