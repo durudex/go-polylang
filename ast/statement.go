@@ -31,10 +31,9 @@ type SmallStatement struct {
 }
 
 type Expression struct {
-	Left       string      `parser:"@( Ident | String | Number )"`
-	Operator   Operator    `parser:"( @@ )?"`
-	Expression *Expression `parser:"( '(' ( @@ )? ')' )?"`
-	Right      string      `parser:"( @( Ident | String | Number ) )?"`
+	Left     *Value   `parser:"@@"`
+	Operator Operator `parser:"( @@ )?"`
+	Right    *Value   `parser:"( @@ )?"`
 }
 
 type If struct {

@@ -37,9 +37,17 @@ func Test_SmallStatement(t *testing.T) {
 			code: "return this.name == name",
 			want: &ast.SmallStatement{
 				Return: &ast.Expression{
-					Left:     "this.name",
+					Left: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("this.name"),
+					},
 					Operator: ast.Equal,
-					Right:    "name",
+					Right: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("name"),
+					},
 				},
 			},
 		},
@@ -48,9 +56,19 @@ func Test_SmallStatement(t *testing.T) {
 			code: "throw error('error message')",
 			want: &ast.SmallStatement{
 				Throw: &ast.Expression{
-					Left: "error",
-					Expression: &ast.Expression{
-						Left: "'error message'",
+					Left: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("error"),
+					},
+					Right: &ast.Value{
+						Sub: &ast.Expression{
+							Left: &ast.Value{
+								String: func(v string) *string {
+									return &v
+								}("'error message'"),
+							},
+						},
 					},
 				},
 			},
@@ -85,9 +103,17 @@ func Test_Expression(t *testing.T) {
 			name: "OK",
 			code: "this.id == id",
 			want: &ast.Expression{
-				Left:     "this.id",
+				Left: &ast.Value{
+					Ident: func(v string) *string {
+						return &v
+					}("this.id"),
+				},
 				Operator: ast.Equal,
-				Right:    "id",
+				Right: &ast.Value{
+					Ident: func(v string) *string {
+						return &v
+					}("id"),
+				},
 			},
 		},
 	}
@@ -121,18 +147,34 @@ func Test_If(t *testing.T) {
 			code: "if (this.id != id) { this.name = name; }",
 			want: &ast.If{
 				Condition: &ast.Expression{
-					Left:     "this.id",
+					Left: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("this.id"),
+					},
 					Operator: ast.NotEqual,
-					Right:    "id",
+					Right: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("id"),
+					},
 				},
 				Statements: []*ast.Statement{
 					{
 						SimpleStatement: ast.SimpleStatement{
 							Small: &ast.SmallStatement{
 								Expression: &ast.Expression{
-									Left:     "this.name",
+									Left: &ast.Value{
+										Ident: func(v string) *string {
+											return &v
+										}("this.name"),
+									},
 									Operator: ast.Assign,
-									Right:    "name",
+									Right: &ast.Value{
+										Ident: func(v string) *string {
+											return &v
+										}("name"),
+									},
 								},
 							},
 						},
@@ -144,15 +186,28 @@ func Test_If(t *testing.T) {
 			name: "Else",
 			code: "if (this.name) {} else { this.age = age; }",
 			want: &ast.If{
-				Condition: &ast.Expression{Left: "this.name"},
+				Condition: &ast.Expression{
+					Left: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("this.name"),
+					}},
 				Else: []*ast.Statement{
 					{
 						SimpleStatement: ast.SimpleStatement{
 							Small: &ast.SmallStatement{
 								Expression: &ast.Expression{
-									Left:     "this.age",
+									Left: &ast.Value{
+										Ident: func(v string) *string {
+											return &v
+										}("this.age"),
+									},
 									Operator: ast.Assign,
-									Right:    "age",
+									Right: &ast.Value{
+										Ident: func(v string) *string {
+											return &v
+										}("age"),
+									},
 								},
 							},
 						},
@@ -191,9 +246,17 @@ func Test_While(t *testing.T) {
 			code: "while (this.balance < balance) { break; }",
 			want: &ast.While{
 				Condition: &ast.Expression{
-					Left:     "this.balance",
+					Left: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("this.balance"),
+					},
 					Operator: ast.LessThan,
-					Right:    "balance",
+					Right: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("balance"),
+					},
 				},
 				Statements: []*ast.Statement{
 					{
@@ -236,8 +299,11 @@ func Test_Let(t *testing.T) {
 			name: "OK",
 			code: "let i = 10",
 			want: &ast.Let{
-				Ident:      "i",
-				Expression: &ast.Expression{Left: "10"},
+				Ident: "i",
+				Expression: &ast.Expression{
+					Left: &ast.Value{
+						Number: func(v int) *int { return &v }(10),
+					}},
 			},
 		},
 	}
@@ -274,19 +340,39 @@ func Test_For(t *testing.T) {
 					Let: &ast.Let{
 						Ident: "i",
 						Expression: &ast.Expression{
-							Left: "0",
+							Left: &ast.Value{
+								Number: func(v int) *int {
+									return &v
+								}(0),
+							},
 						},
 					},
 				},
 				Condition: &ast.Expression{
-					Left:     "i",
+					Left: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("i"),
+					},
 					Operator: ast.LessThan,
-					Right:    "100",
+					Right: &ast.Value{
+						Number: func(v int) *int {
+							return &v
+						}(100),
+					},
 				},
 				Post: &ast.Expression{
-					Left:     "i",
+					Left: &ast.Value{
+						Ident: func(v string) *string {
+							return &v
+						}("i"),
+					},
 					Operator: ast.Add,
-					Right:    "1",
+					Right: &ast.Value{
+						Number: func(v int) *int {
+							return &v
+						}(1),
+					},
 				},
 				Statements: []*ast.Statement{
 					{

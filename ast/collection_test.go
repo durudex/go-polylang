@@ -82,9 +82,17 @@ func Test_Collection(t *testing.T) {
 									SimpleStatement: ast.SimpleStatement{
 										Small: &ast.SmallStatement{
 											Expression: &ast.Expression{
-												Left:     "this.id",
+												Left: &ast.Value{
+													Ident: func(v string) *string {
+														return &v
+													}("this.id"),
+												},
 												Operator: ast.Assign,
-												Right:    "id",
+												Right: &ast.Value{
+													Ident: func(v string) *string {
+														return &v
+													}("id"),
+												},
 											},
 										},
 									},
@@ -93,9 +101,17 @@ func Test_Collection(t *testing.T) {
 									SimpleStatement: ast.SimpleStatement{
 										Small: &ast.SmallStatement{
 											Expression: &ast.Expression{
-												Left:     "this.title",
+												Left: &ast.Value{
+													Ident: func(v string) *string {
+														return &v
+													}("this.title"),
+												},
 												Operator: ast.Assign,
-												Right:    "title",
+												Right: &ast.Value{
+													Ident: func(v string) *string {
+														return &v
+													}("title"),
+												},
 											},
 										},
 									},
@@ -111,7 +127,12 @@ func Test_Collection(t *testing.T) {
 									SimpleStatement: ast.SimpleStatement{
 										Small: &ast.SmallStatement{
 											Expression: &ast.Expression{
-												Left: "selfdestruct",
+												Left: &ast.Value{
+													Ident: func(v string) *string {
+														return &v
+													}("selfdestruct"),
+												},
+												Right: &ast.Value{},
 											},
 										},
 									},
