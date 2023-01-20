@@ -15,7 +15,7 @@ import (
 type Operator int
 
 const (
-	Not Operator = iota
+	Not Operator = iota + 1
 	BitNot
 	Exponent
 	Multiply
