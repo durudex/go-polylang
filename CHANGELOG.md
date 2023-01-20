@@ -2,11 +2,17 @@
 
 ## [Unreleased]
 
+### Added
+
 - Added AST Value type.
+
+### Fixed
+
+- Fixed operator empty value.
 
 ## [v0.0.1] - 2023-01-10
 
 ### Added
 
-- Added AST.
+- Added basic AST.
 - Added lexer rules.
