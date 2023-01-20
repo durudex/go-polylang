@@ -42,13 +42,13 @@ const (
 )
 
 var (
-	operatorToString = map[Operator]string{
+	OperatorToString = map[Operator]string{
 		Not: "!", BitNot: "~", Exponent: "**", Multiply: "*", Divide: "/", Modulo: "%",
 		Add: "+", Subtract: "-", ShiftLeft: "<<", ShiftRight: ">>", BitAnd: "&", BitXor: "^",
 		BitOr: "|", LessThan: "<", GreaterThan: ">", LessThanOrEqual: "<=", GreaterThanOrEqual: ">=",
 		Equal: "==", NotEqual: "!=", And: "&&", Or: "||", AssignSub: "-=", AssignAdd: "+=", Assign: "=",
 	}
-	stringToOperator = map[string]Operator{
+	StringToOperator = map[string]Operator{
 		"!": Not, "~": BitNot, "**": Exponent, "*": Multiply, "/": Divide, "%": Modulo,
 		"+": Add, "-": Subtract, "<<": ShiftLeft, ">>": ShiftRight, "&": BitAnd, "^": BitXor,
 		"|": BitOr, "<": LessThan, ">": GreaterThan, "<=": LessThanOrEqual, ">=": GreaterThanOrEqual,
@@ -56,12 +56,12 @@ var (
 	}
 )
 
-func (o Operator) String() string { return operatorToString[o] }
+func (o Operator) String() string { return OperatorToString[o] }
 
 func (o *Operator) Parse(lex *lexer.PeekingLexer) error {
 	token := lex.Peek()
 
-	one, ok := stringToOperator[token.Value]
+	one, ok := StringToOperator[token.Value]
 	if !ok {
 		return participle.NextMatch
 	} else {
@@ -69,7 +69,7 @@ func (o *Operator) Parse(lex *lexer.PeekingLexer) error {
 
 		next := lex.Peek()
 
-		two, ok := stringToOperator[token.Value+next.Value]
+		two, ok := StringToOperator[token.Value+next.Value]
 		if !ok {
 			*o = one
 		} else {
