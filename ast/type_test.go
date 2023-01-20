@@ -17,6 +17,30 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
+func Test_BasicType(t *testing.T) {
+	type Mock struct {
+		Type ast.BasicType `parser:"@@"`
+	}
+
+	parser := participle.MustBuild[Mock](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for i, want := range ast.StringToType {
+		t.Run(i, func(t *testing.T) {
+
+			got, err := parser.ParseString("", i)
+			if err != nil {
+				t.Fatal("error: parsing basic type: ", err)
+			}
+
+			if !reflect.DeepEqual(got.Type, want) {
+				t.Fatal("error: basic type does not match")
+			}
+		})
+	}
+}
+
 func Test_Type(t *testing.T) {
 	parser := participle.MustBuild[ast.Type](
 		participle.Lexer(polylang.Lexer),
@@ -27,11 +51,6 @@ func Test_Type(t *testing.T) {
 		code string
 		want *ast.Type
 	}{
-		{
-			name: "OK",
-			code: "string",
-			want: &ast.Type{Basic: ast.String},
-		},
 		{
 			name: "Array",
 			code: "string[]",

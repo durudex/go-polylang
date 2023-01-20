@@ -22,10 +22,10 @@ const (
 )
 
 var (
-	typeToString = map[BasicType]string{
+	TypeToString = map[BasicType]string{
 		String: "string", Number: "number", Boolean: "boolean", Record: "record",
 	}
-	stringToType = map[string]BasicType{
+	StringToType = map[string]BasicType{
 		"string": String, "number": Number, "boolean": Boolean, "record": Record,
 	}
 )
@@ -43,12 +43,12 @@ type Map struct {
 	Value Type      `parser:"@@ '>'"`
 }
 
-func (t BasicType) String() string { return typeToString[t] }
+func (t BasicType) String() string { return TypeToString[t] }
 
 func (t *BasicType) Parse(lex *lexer.PeekingLexer) error {
 	token := lex.Peek()
 
-	v, ok := stringToType[token.Value]
+	v, ok := StringToType[token.Value]
 	if !ok {
 		return participle.NextMatch
 	}
