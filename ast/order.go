@@ -20,16 +20,16 @@ const (
 )
 
 var (
-	orderToString = map[Order]string{Asc: "asc", Desc: "desc"}
-	stringToOrder = map[string]Order{"asc": Asc, "desc": Desc}
+	OrderToString = map[Order]string{Asc: "asc", Desc: "desc"}
+	StringToOrder = map[string]Order{"asc": Asc, "desc": Desc}
 )
 
-func (o Order) String() string { return orderToString[o] }
+func (o Order) String() string { return OrderToString[o] }
 
 func (o *Order) Parse(lex *lexer.PeekingLexer) error {
 	token := lex.Peek()
 
-	v, ok := stringToOrder[token.Value]
+	v, ok := StringToOrder[token.Value]
 	if !ok {
 		return participle.NextMatch
 	}
