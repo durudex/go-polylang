@@ -159,21 +159,23 @@ func Test_If(t *testing.T) {
 						}("id"),
 					},
 				},
-				Statements: []*ast.Statement{
-					{
-						SimpleStatement: ast.SimpleStatement{
-							Small: &ast.SmallStatement{
-								Expression: &ast.Expression{
-									Left: &ast.Value{
-										Ident: func(v string) *string {
-											return &v
-										}("this.name"),
-									},
-									Operator: ast.Assign,
-									Right: &ast.Value{
-										Ident: func(v string) *string {
-											return &v
-										}("name"),
+				Statement: &ast.StatementsOrSimple{
+					Statements: []*ast.Statement{
+						{
+							Simple: &ast.SimpleStatement{
+								Small: &ast.SmallStatement{
+									Expression: &ast.Expression{
+										Left: &ast.Value{
+											Ident: func(v string) *string {
+												return &v
+											}("this.name"),
+										},
+										Operator: ast.Assign,
+										Right: &ast.Value{
+											Ident: func(v string) *string {
+												return &v
+											}("name"),
+										},
 									},
 								},
 							},
@@ -191,23 +193,51 @@ func Test_If(t *testing.T) {
 						Ident: func(v string) *string {
 							return &v
 						}("this.name"),
-					}},
-				Else: []*ast.Statement{
-					{
-						SimpleStatement: ast.SimpleStatement{
-							Small: &ast.SmallStatement{
-								Expression: &ast.Expression{
-									Left: &ast.Value{
-										Ident: func(v string) *string {
-											return &v
-										}("this.age"),
+					},
+				},
+				Statement: &ast.StatementsOrSimple{},
+				Else: &ast.StatementsOrSimple{
+					Statements: []*ast.Statement{
+						{
+							Simple: &ast.SimpleStatement{
+								Small: &ast.SmallStatement{
+									Expression: &ast.Expression{
+										Left: &ast.Value{
+											Ident: func(v string) *string {
+												return &v
+											}("this.age"),
+										},
+										Operator: ast.Assign,
+										Right: &ast.Value{
+											Ident: func(v string) *string {
+												return &v
+											}("age"),
+										},
 									},
-									Operator: ast.Assign,
-									Right: &ast.Value{
-										Ident: func(v string) *string {
-											return &v
-										}("age"),
-									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Simple",
+			code: "if (name) return 123;",
+			want: &ast.If{
+				Condition: &ast.Expression{
+					Left: &ast.Value{
+						Ident: func(v string) *string { return &v }("name"),
+					},
+				},
+				Statement: &ast.StatementsOrSimple{
+					Simple: &ast.SimpleStatement{
+						Small: &ast.SmallStatement{
+							Return: &ast.Expression{
+								Left: &ast.Value{
+									Number: func(v int) *int {
+										return &v
+									}(123),
 								},
 							},
 						},
@@ -260,7 +290,7 @@ func Test_While(t *testing.T) {
 				},
 				Statements: []*ast.Statement{
 					{
-						SimpleStatement: ast.SimpleStatement{
+						Simple: &ast.SimpleStatement{
 							Small: &ast.SmallStatement{
 								Break: true,
 							},
@@ -376,7 +406,7 @@ func Test_For(t *testing.T) {
 				},
 				Statements: []*ast.Statement{
 					{
-						SimpleStatement: ast.SimpleStatement{
+						Simple: &ast.SimpleStatement{
 							Small: &ast.SmallStatement{
 								Break: true,
 							},

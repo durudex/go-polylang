@@ -79,7 +79,7 @@ func Test_Collection(t *testing.T) {
 							},
 							Statements: []*ast.Statement{
 								{
-									SimpleStatement: ast.SimpleStatement{
+									Simple: &ast.SimpleStatement{
 										Small: &ast.SmallStatement{
 											Expression: &ast.Expression{
 												Left: &ast.Value{
@@ -98,7 +98,7 @@ func Test_Collection(t *testing.T) {
 									},
 								},
 								{
-									SimpleStatement: ast.SimpleStatement{
+									Simple: &ast.SimpleStatement{
 										Small: &ast.SmallStatement{
 											Expression: &ast.Expression{
 												Left: &ast.Value{
@@ -124,7 +124,7 @@ func Test_Collection(t *testing.T) {
 							Name: "del",
 							Statements: []*ast.Statement{
 								{
-									SimpleStatement: ast.SimpleStatement{
+									Simple: &ast.SimpleStatement{
 										Small: &ast.SmallStatement{
 											Expression: &ast.Expression{
 												Left: &ast.Value{

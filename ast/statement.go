@@ -8,8 +8,8 @@
 package ast
 
 type Statement struct {
-	CompoundStatement
-	SimpleStatement
+	Compound *CompoundStatement `parser:"@@"`
+	Simple   *SimpleStatement   `parser:"| @@"`
 }
 
 type CompoundStatement struct {
@@ -19,7 +19,7 @@ type CompoundStatement struct {
 }
 
 type SimpleStatement struct {
-	Small *SmallStatement `parser:"| @@ ';'"`
+	Small *SmallStatement `parser:"@@ ';'"`
 }
 
 type SmallStatement struct {
@@ -30,6 +30,11 @@ type SmallStatement struct {
 	Expression *Expression `parser:"| @@"`
 }
 
+type StatementsOrSimple struct {
+	Statements []*Statement     `parser:"'{' @@* '}'"`
+	Simple     *SimpleStatement `parser:"| @@"`
+}
+
 type Expression struct {
 	Left     *Value   `parser:"@@"`
 	Operator Operator `parser:"( @@ )?"`
@@ -37,9 +42,9 @@ type Expression struct {
 }
 
 type If struct {
-	Condition  *Expression  `parser:"'if' '(' @@ ')'"`
-	Statements []*Statement `parser:"'{' @@* '}'"`
-	Else       []*Statement `parser:"( 'else' '{' @@* '}' )?"`
+	Condition *Expression         `parser:"'if' '(' @@ ')'"`
+	Statement *StatementsOrSimple `parser:"( @@ )?"`
+	Else      *StatementsOrSimple `parser:"( 'else' @@ )?"`
 }
 
 type While struct {
