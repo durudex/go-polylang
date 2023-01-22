@@ -49,6 +49,16 @@ func Test_Value(t *testing.T) {
 			},
 		},
 		{
+			name: "True",
+			code: "true",
+			want: &ast.Value{Boolean: true},
+		},
+		{
+			name: "False",
+			code: "false",
+			want: &ast.Value{Boolean: false},
+		},
+		{
 			name: "Ident",
 			code: "Durudex",
 			want: &ast.Value{

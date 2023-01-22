@@ -8,8 +8,9 @@
 package ast
 
 type Value struct {
-	Number *int        `parser:"@Number"`
-	String *string     `parser:"| @String"`
-	Ident  *string     `parser:"| @Ident"`
-	Sub    *Expression `parser:"| '(' ( @@ )? ')'"`
+	Number  *int        `parser:"@Number"`
+	String  *string     `parser:"| @String"`
+	Boolean bool        `parser:"| ( @'true' | 'false' )"`
+	Ident   *string     `parser:"| @Ident"`
+	Sub     *Expression `parser:"| '(' ( @@ )? ')'"`
 }
