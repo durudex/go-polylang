@@ -5,6 +5,7 @@
 ### Added
 
 - Added AST Value type.
+- Added basic bytes type.
 
 ### Fixed
 

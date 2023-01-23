@@ -18,15 +18,18 @@ const (
 	String BasicType = iota + 1
 	Number
 	Boolean
+	Bytes
 	Record
 )
 
 var (
 	TypeToString = map[BasicType]string{
-		String: "string", Number: "number", Boolean: "boolean", Record: "record",
+		String: "string", Number: "number", Boolean: "boolean", Bytes: "bytes",
+		Record: "record",
 	}
 	StringToType = map[string]BasicType{
-		"string": String, "number": Number, "boolean": Boolean, "record": Record,
+		"string": String, "number": Number, "boolean": Boolean, "bytes": Bytes,
+		"record": Record,
 	}
 )
 
