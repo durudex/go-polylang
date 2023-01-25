@@ -45,3 +45,8 @@ func (d *DecoratorName) Parse(lex *lexer.PeekingLexer) error {
 
 	return nil
 }
+
+type Decorator struct {
+	Name      DecoratorName `parser:"'@' @@"`
+	Arguments []string      `parser:"( '(' @Ident ')' )?"`
+}

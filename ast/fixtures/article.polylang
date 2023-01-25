@@ -1,3 +1,4 @@
+@public
 collection Article {
     id: string;
     title: string;

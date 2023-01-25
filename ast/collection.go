@@ -8,8 +8,9 @@
 package ast
 
 type Collection struct {
-	Name  string  `parser:"'collection' @Ident"`
-	Items []*Item `parser:"'{' @@* '}'"`
+	Decorators []*Decorator `parser:"( @@* )?"`
+	Name       string       `parser:"'collection' @Ident"`
+	Items      []*Item      `parser:"'{' @@* '}'"`
 }
 
 type Item struct {
@@ -19,9 +20,10 @@ type Item struct {
 }
 
 type Field struct {
-	Name     string `parser:"@Ident"`
-	Optional bool   `parser:"@'?'?"`
-	Type     Type   `parser:"':' @@"`
+	Decorators []*Decorator `parser:"( @@* )?"`
+	Name       string       `parser:"@Ident"`
+	Optional   bool         `parser:"@'?'?"`
+	Type       Type         `parser:"':' @@"`
 }
 
 type Index struct {
@@ -34,6 +36,7 @@ type IndexField struct {
 }
 
 type Function struct {
+	Decorators []*Decorator `parser:"( @@* )?"`
 	Name       string       `parser:"( 'function' )? @Ident '('"`
 	Parameters []*Field     `parser:"( @@ ( ',' @@ )* )? ')'"`
 	ReturnType Type         `parser:"( ':' @@ )?"`

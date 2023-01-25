@@ -32,7 +32,8 @@ func Test_Collection(t *testing.T) {
 			name: "OK",
 			file: "fixtures/article.polylang",
 			want: &ast.Collection{
-				Name: "Article",
+				Decorators: []*ast.Decorator{{Name: ast.Public}},
+				Name:       "Article",
 				Items: []*ast.Item{
 					{
 						Field: &ast.Field{
@@ -184,12 +185,21 @@ func Test_Field(t *testing.T) {
 			},
 		},
 		{
-			name: "Optional Field",
+			name: "Optional",
 			code: "name?: string",
 			want: &ast.Field{
 				Name:     "name",
 				Optional: true,
 				Type:     ast.Type{Basic: ast.String},
+			},
+		},
+		{
+			name: "Decorator",
+			code: "@read name: string",
+			want: &ast.Field{
+				Decorators: []*ast.Decorator{{Name: ast.Read}},
+				Name:       "name",
+				Type:       ast.Type{Basic: ast.String},
 			},
 		},
 	}
@@ -308,6 +318,16 @@ func Test_Function(t *testing.T) {
 			name: "Short",
 			code: "test() {}",
 			want: &ast.Function{Name: "test"},
+		},
+		{
+			name: "Decorator",
+			code: "@call(owner) function test() {}",
+			want: &ast.Function{
+				Decorators: []*ast.Decorator{
+					{Name: ast.Call, Arguments: []string{"owner"}},
+				},
+				Name: "test",
+			},
 		},
 	}
 

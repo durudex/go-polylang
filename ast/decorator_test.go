@@ -40,3 +40,42 @@ func Test_DecoratorName(t *testing.T) {
 		})
 	}
 }
+
+func Test_Decorator(t *testing.T) {
+	parser := participle.MustBuild[ast.Decorator](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	tests := []struct {
+		name string
+		code string
+		want *ast.Decorator
+	}{
+		{
+			name: "OK",
+			code: "@public",
+			want: &ast.Decorator{Name: ast.Public},
+		},
+		{
+			name: "Argument",
+			code: "@call(owner)",
+			want: &ast.Decorator{
+				Name:      ast.Call,
+				Arguments: []string{"owner"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parser.ParseString("", tt.code)
+			if err != nil {
+				t.Fatal("error: parsing polylang code: ", err)
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Fatal("error: decorator does not match")
+			}
+		})
+	}
+}
