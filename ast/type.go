@@ -19,17 +19,18 @@ const (
 	Number
 	Boolean
 	Bytes
+	PublicKey
 	Record
 )
 
 var (
 	TypeToString = map[BasicType]string{
 		String: "string", Number: "number", Boolean: "boolean", Bytes: "bytes",
-		Record: "record",
+		PublicKey: "PublicKey", Record: "record",
 	}
 	StringToType = map[string]BasicType{
 		"string": String, "number": Number, "boolean": Boolean, "bytes": Bytes,
-		"record": Record,
+		"PublicKey": PublicKey, "record": Record,
 	}
 )
 

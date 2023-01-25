@@ -6,6 +6,7 @@
 
 - Added AST Value type.
 - Added basic bytes type.
+- Added basic PublicKey type.
 
 ### Fixed
 
