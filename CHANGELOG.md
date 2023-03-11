@@ -1,5 +1,15 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+- Added benchmarks.
+
+### Fixed
+
+- Fixed a multi-line block comment bug.
+
 ## [v0.0.2] - 2023-01-25
 
 ### Added
