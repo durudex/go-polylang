@@ -17,25 +17,39 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
-func Test_Operator(t *testing.T) {
-	type Mock struct {
-		Operator ast.Operator `parser:"@@"`
-	}
+type OperatorMock struct {
+	Operator ast.Operator `parser:"@@"`
+}
 
-	parser := participle.MustBuild[Mock](
+func TestOperator(t *testing.T) {
+	parser := participle.MustBuild[OperatorMock](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	for i, want := range ast.StringToOperator {
-		t.Run(i, func(t *testing.T) {
+	for operator, want := range ast.StringToOperator {
+		t.Run(operator, func(t *testing.T) {
 
-			got, err := parser.ParseString("", i)
+			got, err := parser.ParseString("", operator)
 			if err != nil {
 				t.Fatal("error: parsing operator: ", err)
 			}
 
 			if !reflect.DeepEqual(got.Operator, want) {
 				t.Fatal("error: operator does not match")
+			}
+		})
+	}
+}
+
+func BenchmarkOperator(b *testing.B) {
+	parser := participle.MustBuild[OperatorMock](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for operator := range ast.StringToOperator {
+		b.Run(operator, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", operator) //nolint:errcheck
 			}
 		})
 	}

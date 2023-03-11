@@ -17,25 +17,39 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
-func Test_Order(t *testing.T) {
-	type Mock struct {
-		Order ast.Order `parser:"@@"`
-	}
+type OrderMock struct {
+	Order ast.Order `parser:"@@"`
+}
 
-	parser := participle.MustBuild[Mock](
+func TestOrder(t *testing.T) {
+	parser := participle.MustBuild[OrderMock](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	for i, want := range ast.StringToOrder {
-		t.Run(i, func(t *testing.T) {
+	for order, want := range ast.StringToOrder {
+		t.Run(order, func(t *testing.T) {
 
-			got, err := parser.ParseString("", i)
+			got, err := parser.ParseString("", order)
 			if err != nil {
 				t.Fatal("error: parsing order: ", err)
 			}
 
 			if !reflect.DeepEqual(got.Order, want) {
 				t.Fatal("error: order does not match")
+			}
+		})
+	}
+}
+
+func BenchmarkOrder(b *testing.B) {
+	parser := participle.MustBuild[OrderMock](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for order := range ast.StringToOrder {
+		b.Run(order, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", order) //nolint:errcheck
 			}
 		})
 	}

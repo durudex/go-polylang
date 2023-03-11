@@ -16,41 +16,56 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
-func Test_Comment(t *testing.T) {
-	type Mock struct {
-		Value string `parser:"@Ident"`
-	}
+var CommentTests = map[string]struct {
+	code string
+	want string
+}{
+	"Line": {
+		code: "line // comment",
+		want: "line",
+	},
+	"Block": {
+		code: "/* comment */ block",
+		want: "block",
+	},
+	"Multi Line Block": {
+		code: "/*\n * multi\n* line\n*/ multi",
+		want: "multi",
+	},
+}
 
-	parser := participle.MustBuild[Mock](
+type CommentMock struct {
+	Value string `parser:"@Ident"`
+}
+
+func TestComment(t *testing.T) {
+	parser := participle.MustBuild[CommentMock](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want string
-	}{
-		{
-			name: "Line",
-			code: "line // comment",
-			want: "line",
-		},
-		{
-			name: "Block",
-			code: "/* comment */ block",
-			want: "block",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range CommentTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got.Value, tt.want) {
+			if !reflect.DeepEqual(got.Value, test.want) {
 				t.Fatal("error: value does not match")
+			}
+		})
+	}
+}
+
+func BenchmarkComment(b *testing.B) {
+	parser := participle.MustBuild[CommentMock](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range CommentTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
 			}
 		})
 	}

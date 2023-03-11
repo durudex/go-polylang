@@ -17,80 +17,86 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
-func Test_Value(t *testing.T) {
+var ValueTests = map[string]struct {
+	code string
+	want *ast.Value
+}{
+	"Number": {
+		code: "10",
+		want: &ast.Value{
+			Number: func(v int) *int { return &v }(10),
+		},
+	},
+	"Single Quoted String": {
+		code: "'Durudex'",
+		want: &ast.Value{
+			String: func(v string) *string { return &v }("'Durudex'"),
+		},
+	},
+	"Double Quoted String": {
+		code: "\"Durudex\"",
+		want: &ast.Value{
+			String: func(v string) *string { return &v }("\"Durudex\""),
+		},
+	},
+	"True": {
+		code: "true",
+		want: &ast.Value{Boolean: true},
+	},
+	"False": {
+		code: "false",
+		want: &ast.Value{Boolean: false},
+	},
+	"Ident": {
+		code: "Durudex",
+		want: &ast.Value{
+			Ident: func(v string) *string { return &v }("Durudex"),
+		},
+	},
+	"Sub Expression": {
+		code: "(this.id == id)",
+		want: &ast.Value{
+			Sub: &ast.Expression{
+				Left: &ast.Value{
+					Ident: func(v string) *string { return &v }("this.id"),
+				},
+				Operator: ast.Equal,
+				Right: &ast.Value{
+					Ident: func(v string) *string { return &v }("id"),
+				},
+			},
+		},
+	},
+}
+
+func TestValue(t *testing.T) {
 	parser := participle.MustBuild[ast.Value](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want *ast.Value
-	}{
-		{
-			name: "Number",
-			code: "10",
-			want: &ast.Value{
-				Number: func(v int) *int { return &v }(10),
-			},
-		},
-		{
-			name: "Single Quoted String",
-			code: "'Durudex'",
-			want: &ast.Value{
-				String: func(v string) *string { return &v }("'Durudex'"),
-			},
-		},
-		{
-			name: "Double Quoted String",
-			code: "\"Durudex\"",
-			want: &ast.Value{
-				String: func(v string) *string { return &v }("\"Durudex\""),
-			},
-		},
-		{
-			name: "True",
-			code: "true",
-			want: &ast.Value{Boolean: true},
-		},
-		{
-			name: "False",
-			code: "false",
-			want: &ast.Value{Boolean: false},
-		},
-		{
-			name: "Ident",
-			code: "Durudex",
-			want: &ast.Value{
-				Ident: func(v string) *string { return &v }("Durudex"),
-			},
-		},
-		{
-			name: "Sub Expression",
-			code: "(this.id == id)",
-			want: &ast.Value{
-				Sub: &ast.Expression{
-					Left: &ast.Value{
-						Ident: func(v string) *string { return &v }("this.id"),
-					},
-					Operator: ast.Equal,
-					Right: &ast.Value{
-						Ident: func(v string) *string { return &v }("id"),
-					},
-				},
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range ValueTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: value does not match")
+			}
+		})
+	}
+}
+
+func BenchmarkValue(b *testing.B) {
+	parser := participle.MustBuild[ast.Value](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range ValueTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
 			}
 		})
 	}

@@ -17,19 +17,19 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
-func Test_DecoratorName(t *testing.T) {
-	type Mock struct {
-		Name ast.DecoratorName `parser:"@@"`
-	}
+type DecoratorNameMock struct {
+	Name ast.DecoratorName `parser:"@@"`
+}
 
-	parser := participle.MustBuild[Mock](
+func TestDecoratorName(t *testing.T) {
+	parser := participle.MustBuild[DecoratorNameMock](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	for i, want := range ast.StringToDecoratorName {
-		t.Run(i, func(t *testing.T) {
+	for name, want := range ast.StringToDecoratorName {
+		t.Run(name, func(t *testing.T) {
 
-			got, err := parser.ParseString("", i)
+			got, err := parser.ParseString("", name)
 			if err != nil {
 				t.Fatal("error: parsing decorator name: ", err)
 			}
@@ -41,40 +41,65 @@ func Test_DecoratorName(t *testing.T) {
 	}
 }
 
-func Test_Decorator(t *testing.T) {
+func BenchmarkDecoratorName(b *testing.B) {
+	parser := participle.MustBuild[DecoratorNameMock](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name := range ast.StringToDecoratorName {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", name) //nolint:errcheck
+			}
+		})
+	}
+}
+
+var DecoratorTests = map[string]struct {
+	code string
+	want *ast.Decorator
+}{
+	"OK": {
+		code: "@public",
+		want: &ast.Decorator{Name: ast.Public},
+	},
+	"Argument": {
+		code: "@call(owner)",
+		want: &ast.Decorator{
+			Name:      ast.Call,
+			Arguments: []string{"owner"},
+		},
+	},
+}
+
+func TestDecorator(t *testing.T) {
 	parser := participle.MustBuild[ast.Decorator](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want *ast.Decorator
-	}{
-		{
-			name: "OK",
-			code: "@public",
-			want: &ast.Decorator{Name: ast.Public},
-		},
-		{
-			name: "Argument",
-			code: "@call(owner)",
-			want: &ast.Decorator{
-				Name:      ast.Call,
-				Arguments: []string{"owner"},
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range DecoratorTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: decorator does not match")
+			}
+		})
+	}
+}
+
+func BenchmarkDecorator(b *testing.B) {
+	parser := participle.MustBuild[ast.Decorator](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range DecoratorTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
 			}
 		})
 	}

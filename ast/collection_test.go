@@ -18,101 +18,93 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
-func Test_Collection(t *testing.T) {
-	parser := participle.MustBuild[ast.Collection](
-		participle.Lexer(polylang.Lexer),
-	)
-
-	tests := []struct {
-		name string
-		file string
-		want *ast.Collection
-	}{
-		{
-			name: "OK",
-			file: "fixtures/article.polylang",
-			want: &ast.Collection{
-				Decorators: []*ast.Decorator{{Name: ast.Public}},
-				Name:       "Article",
-				Items: []*ast.Item{
-					{
-						Field: &ast.Field{
-							Name: "id",
-							Type: ast.Type{Basic: ast.String},
-						},
+var CollectionTests = map[string]struct {
+	file string
+	want *ast.Collection
+}{
+	"OK": {
+		file: "fixtures/article.polylang",
+		want: &ast.Collection{
+			Decorators: []*ast.Decorator{{Name: ast.Public}},
+			Name:       "Article",
+			Items: []*ast.Item{
+				{
+					Field: &ast.Field{
+						Name: "id",
+						Type: ast.Type{Basic: ast.String},
 					},
-					{
-						Field: &ast.Field{
-							Name: "title",
-							Type: ast.Type{Basic: ast.String},
-						},
+				},
+				{
+					Field: &ast.Field{
+						Name: "title",
+						Type: ast.Type{Basic: ast.String},
 					},
-					{
-						Field: &ast.Field{
-							Name: "info",
-							Type: ast.Type{
-								Object: []*ast.Field{
-									{
-										Name: "author",
-										Type: ast.Type{Basic: ast.String},
-									},
-									{
-										Name:     "sponsor",
-										Optional: true,
-										Type:     ast.Type{Basic: ast.String},
-									},
+				},
+				{
+					Field: &ast.Field{
+						Name: "info",
+						Type: ast.Type{
+							Object: []*ast.Field{
+								{
+									Name: "author",
+									Type: ast.Type{Basic: ast.String},
+								},
+								{
+									Name:     "sponsor",
+									Optional: true,
+									Type:     ast.Type{Basic: ast.String},
 								},
 							},
 						},
 					},
-					{
-						Function: &ast.Function{
-							Name: "constructor",
-							Parameters: []*ast.Field{
-								{
-									Name: "id",
-									Type: ast.Type{Basic: ast.String},
-								},
-								{
-									Name: "title",
-									Type: ast.Type{Basic: ast.String},
-								},
+				},
+				{
+					Function: &ast.Function{
+						Name: "constructor",
+						Parameters: []*ast.Field{
+							{
+								Name: "id",
+								Type: ast.Type{Basic: ast.String},
 							},
-							Statements: []*ast.Statement{
-								{
-									Simple: &ast.SimpleStatement{
-										Small: &ast.SmallStatement{
-											Expression: &ast.Expression{
-												Left: &ast.Value{
-													Ident: func(v string) *string {
-														return &v
-													}("this.id"),
-												},
-												Operator: ast.Assign,
-												Right: &ast.Value{
-													Ident: func(v string) *string {
-														return &v
-													}("id"),
-												},
+							{
+								Name: "title",
+								Type: ast.Type{Basic: ast.String},
+							},
+						},
+						Statements: []*ast.Statement{
+							{
+								Simple: &ast.SimpleStatement{
+									Small: &ast.SmallStatement{
+										Expression: &ast.Expression{
+											Left: &ast.Value{
+												Ident: func(v string) *string {
+													return &v
+												}("this.id"),
+											},
+											Operator: ast.Assign,
+											Right: &ast.Value{
+												Ident: func(v string) *string {
+													return &v
+												}("id"),
 											},
 										},
 									},
 								},
-								{
-									Simple: &ast.SimpleStatement{
-										Small: &ast.SmallStatement{
-											Expression: &ast.Expression{
-												Left: &ast.Value{
-													Ident: func(v string) *string {
-														return &v
-													}("this.title"),
-												},
-												Operator: ast.Assign,
-												Right: &ast.Value{
-													Ident: func(v string) *string {
-														return &v
-													}("title"),
-												},
+							},
+							{
+								Simple: &ast.SimpleStatement{
+									Small: &ast.SmallStatement{
+										Expression: &ast.Expression{
+											Left: &ast.Value{
+												Ident: func(v string) *string {
+													return &v
+												}("this.title"),
+											},
+											Operator: ast.Assign,
+											Right: &ast.Value{
+												Ident: func(v string) *string {
+													return &v
+												}("title"),
 											},
 										},
 									},
@@ -120,21 +112,21 @@ func Test_Collection(t *testing.T) {
 							},
 						},
 					},
-					{
-						Function: &ast.Function{
-							Name: "del",
-							Statements: []*ast.Statement{
-								{
-									Simple: &ast.SimpleStatement{
-										Small: &ast.SmallStatement{
-											Expression: &ast.Expression{
-												Left: &ast.Value{
-													Ident: func(v string) *string {
-														return &v
-													}("selfdestruct"),
-												},
-												Right: &ast.Value{},
+				},
+				{
+					Function: &ast.Function{
+						Name: "del",
+						Statements: []*ast.Statement{
+							{
+								Simple: &ast.SimpleStatement{
+									Small: &ast.SmallStatement{
+										Expression: &ast.Expression{
+											Left: &ast.Value{
+												Ident: func(v string) *string {
+													return &v
+												}("selfdestruct"),
 											},
+											Right: &ast.Value{},
 										},
 									},
 								},
@@ -144,11 +136,17 @@ func Test_Collection(t *testing.T) {
 				},
 			},
 		},
-	}
+	},
+}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			f, err := os.Open(tt.file)
+func TestCollection(t *testing.T) {
+	parser := participle.MustBuild[ast.Collection](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range CollectionTests {
+		t.Run(name, func(t *testing.T) {
+			f, err := os.Open(test.file)
 			if err != nil {
 				t.Fatal("error: opening fixtures file: ", err)
 			}
@@ -159,187 +157,249 @@ func Test_Collection(t *testing.T) {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: collection does not match")
 			}
 		})
 	}
 }
 
-func Test_Field(t *testing.T) {
+func BenchmarkCollection(b *testing.B) {
+	parser := participle.MustBuild[ast.Collection](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range CollectionTests {
+		b.Run(name, func(b *testing.B) {
+			f, err := os.Open(test.file)
+			if err != nil {
+				b.Fatal("error: opening fixtures file: ", err)
+			}
+			defer f.Close()
+
+			for i := 0; i < b.N; i++ {
+				parser.Parse("", f) //nolint:errcheck
+			}
+		})
+	}
+}
+
+var FieldTests = map[string]struct {
+	code string
+	want *ast.Field
+}{
+	"OK": {
+		code: "id: string",
+		want: &ast.Field{
+			Name: "id",
+			Type: ast.Type{Basic: ast.String},
+		},
+	},
+	"Optional": {
+		code: "name?: string",
+		want: &ast.Field{
+			Name:     "name",
+			Optional: true,
+			Type:     ast.Type{Basic: ast.String},
+		},
+	},
+	"Decorator": {
+		code: "@read name: string",
+		want: &ast.Field{
+			Decorators: []*ast.Decorator{{Name: ast.Read}},
+			Name:       "name",
+			Type:       ast.Type{Basic: ast.String},
+		},
+	},
+}
+
+func TestField(t *testing.T) {
 	parser := participle.MustBuild[ast.Field](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want *ast.Field
-	}{
-		{
-			name: "OK",
-			code: "id: string",
-			want: &ast.Field{
-				Name: "id",
-				Type: ast.Type{Basic: ast.String},
-			},
-		},
-		{
-			name: "Optional",
-			code: "name?: string",
-			want: &ast.Field{
-				Name:     "name",
-				Optional: true,
-				Type:     ast.Type{Basic: ast.String},
-			},
-		},
-		{
-			name: "Decorator",
-			code: "@read name: string",
-			want: &ast.Field{
-				Decorators: []*ast.Decorator{{Name: ast.Read}},
-				Name:       "name",
-				Type:       ast.Type{Basic: ast.String},
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range FieldTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: field does not match")
 			}
 		})
 	}
 }
 
-func Test_Index(t *testing.T) {
+func BenchmarkField(b *testing.B) {
+	parser := participle.MustBuild[ast.Field](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range FieldTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
+			}
+		})
+	}
+}
+
+var IndexTests = map[string]struct {
+	code string
+	want *ast.Index
+}{
+	"OK": {
+		code: "@index()",
+		want: &ast.Index{},
+	},
+}
+
+func TestIndex(t *testing.T) {
 	parser := participle.MustBuild[ast.Index](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want *ast.Index
-	}{
-		{
-			name: "OK",
-			code: "@index()",
-			want: &ast.Index{},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range IndexTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: index does not match")
 			}
 		})
 	}
 }
 
-func Test_IndexField(t *testing.T) {
+func BenchmarkIndex(b *testing.B) {
+	parser := participle.MustBuild[ast.Index](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range IndexTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
+			}
+		})
+	}
+}
+
+var IndexFieldTests = map[string]struct {
+	code string
+	want *ast.IndexField
+}{
+	"OK": {
+		code: "[id, desc]",
+		want: &ast.IndexField{
+			Name:  "id",
+			Order: ast.Desc,
+		},
+	},
+	"Simple Field": {
+		code: "id",
+		want: &ast.IndexField{
+			Name:  "id",
+			Order: ast.Asc,
+		},
+	},
+}
+
+func TestIndexField(t *testing.T) {
 	parser := participle.MustBuild[ast.IndexField](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want *ast.IndexField
-	}{
-		{
-			name: "OK",
-			code: "[id, desc]",
-			want: &ast.IndexField{
-				Name:  "id",
-				Order: ast.Desc,
-			},
-		},
-		{
-			name: "Simple Field",
-			code: "id",
-			want: &ast.IndexField{
-				Name:  "id",
-				Order: ast.Asc,
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range IndexFieldTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: index field does not match")
 			}
 		})
 	}
 }
 
-func Test_Function(t *testing.T) {
+func BenchmarkIndexField(b *testing.B) {
+	parser := participle.MustBuild[ast.IndexField](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range IndexFieldTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
+			}
+		})
+	}
+}
+
+var FunctionTests = map[string]struct {
+	code string
+	want *ast.Function
+}{
+	"OK": {
+		code: "function test() {}",
+		want: &ast.Function{Name: "test"},
+	},
+	"Return Type": {
+		code: "function test(): string {}",
+		want: &ast.Function{
+			Name:       "test",
+			ReturnType: ast.Type{Basic: ast.String},
+		},
+	},
+	"Short": {
+		code: "test() {}",
+		want: &ast.Function{Name: "test"},
+	},
+	"Decorator": {
+		code: "@call(owner) function test() {}",
+		want: &ast.Function{
+			Decorators: []*ast.Decorator{
+				{Name: ast.Call, Arguments: []string{"owner"}},
+			},
+			Name: "test",
+		},
+	},
+}
+
+func TestFunction(t *testing.T) {
 	parser := participle.MustBuild[ast.Function](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want *ast.Function
-	}{
-		{
-			name: "OK",
-			code: "function test() {}",
-			want: &ast.Function{Name: "test"},
-		},
-		{
-			name: "Return Type",
-			code: "function test(): string {}",
-			want: &ast.Function{
-				Name:       "test",
-				ReturnType: ast.Type{Basic: ast.String},
-			},
-		},
-		{
-			name: "Short",
-			code: "test() {}",
-			want: &ast.Function{Name: "test"},
-		},
-		{
-			name: "Decorator",
-			code: "@call(owner) function test() {}",
-			want: &ast.Function{
-				Decorators: []*ast.Decorator{
-					{Name: ast.Call, Arguments: []string{"owner"}},
-				},
-				Name: "test",
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range FunctionTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: function does not match")
+			}
+		})
+	}
+}
+
+func BenchmarkFunction(b *testing.B) {
+	parser := participle.MustBuild[ast.Function](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range FunctionTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
 			}
 		})
 	}

@@ -17,19 +17,19 @@ import (
 	"github.com/alecthomas/participle/v2"
 )
 
-func Test_BasicType(t *testing.T) {
-	type Mock struct {
-		Type ast.BasicType `parser:"@@"`
-	}
+type BasicTypeMock struct {
+	Type ast.BasicType `parser:"@@"`
+}
 
-	parser := participle.MustBuild[Mock](
+func TestBasicType(t *testing.T) {
+	parser := participle.MustBuild[BasicTypeMock](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	for i, want := range ast.StringToType {
-		t.Run(i, func(t *testing.T) {
+	for basic, want := range ast.StringToType {
+		t.Run(basic, func(t *testing.T) {
 
-			got, err := parser.ParseString("", i)
+			got, err := parser.ParseString("", basic)
 			if err != nil {
 				t.Fatal("error: parsing basic type: ", err)
 			}
@@ -41,64 +41,87 @@ func Test_BasicType(t *testing.T) {
 	}
 }
 
-func Test_Type(t *testing.T) {
+func BenchmarkBasicType(b *testing.B) {
+	parser := participle.MustBuild[BasicTypeMock](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for basic := range ast.StringToType {
+		b.Run(basic, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", basic) //nolint:errcheck
+			}
+		})
+	}
+}
+
+var TypeTests = map[string]struct {
+	code string
+	want *ast.Type
+}{
+	"Array": {
+		code: "string[]",
+		want: &ast.Type{Basic: ast.String, Array: true},
+	},
+	"Map": {
+		code: "map<string, number>",
+		want: &ast.Type{
+			Map: &ast.Map{
+				Key:   ast.String,
+				Value: ast.Type{Basic: ast.Number},
+			},
+		},
+	},
+	"Object": {
+		code: "{name: string; website?: string;}",
+		want: &ast.Type{
+			Object: []*ast.Field{
+				{
+					Name: "name",
+					Type: ast.Type{Basic: ast.String},
+				},
+				{
+					Name:     "website",
+					Optional: true,
+					Type:     ast.Type{Basic: ast.String},
+				},
+			},
+		},
+	},
+	"Foreign": {
+		code: "ForeignCollection",
+		want: &ast.Type{Foreign: "ForeignCollection"},
+	},
+}
+
+func TestType(t *testing.T) {
 	parser := participle.MustBuild[ast.Type](
 		participle.Lexer(polylang.Lexer),
 	)
 
-	tests := []struct {
-		name string
-		code string
-		want *ast.Type
-	}{
-		{
-			name: "Array",
-			code: "string[]",
-			want: &ast.Type{Basic: ast.String, Array: true},
-		},
-		{
-			name: "Map",
-			code: "map<string, number>",
-			want: &ast.Type{
-				Map: &ast.Map{
-					Key:   ast.String,
-					Value: ast.Type{Basic: ast.Number},
-				},
-			},
-		},
-		{
-			name: "Object",
-			code: "{name: string; website?: string;}",
-			want: &ast.Type{
-				Object: []*ast.Field{
-					{
-						Name: "name",
-						Type: ast.Type{Basic: ast.String},
-					},
-					{
-						Name:     "website",
-						Optional: true,
-						Type:     ast.Type{Basic: ast.String},
-					},
-				},
-			},
-		},
-		{
-			name: "Foreign",
-			code: "ForeignCollection",
-			want: &ast.Type{Foreign: "ForeignCollection"},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parser.ParseString("", tt.code)
+	for name, test := range TypeTests {
+		t.Run(name, func(t *testing.T) {
+			got, err := parser.ParseString("", test.code)
 			if err != nil {
 				t.Fatal("error: parsing polylang code: ", err)
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, test.want) {
 				t.Fatal("error: type does not match")
+			}
+		})
+	}
+}
+
+func BenchmarkType(b *testing.B) {
+	parser := participle.MustBuild[ast.Type](
+		participle.Lexer(polylang.Lexer),
+	)
+
+	for name, test := range TypeTests {
+		b.Run(name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				parser.ParseString("", test.code) //nolint:errcheck
 			}
 		})
 	}
