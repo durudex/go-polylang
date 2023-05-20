@@ -8,5 +8,10 @@
 package ast
 
 type Program struct {
-	Collections []*Collection `parser:"@@*"`
+	Nodes []*Node `parser:"@@*" json:"nodes,omitempty"`
+}
+
+type Node struct {
+	Collection *Collection `parser:"@@"   json:"collection,omitempty"`
+	Function   *Function   `parser:"| @@" json:"function,omitempty"`
 }
