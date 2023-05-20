@@ -1,4 +1,4 @@
-# `durudex/go-polylang`
+# `go-polylang`
 
 Implementation of the [Polylang](https://github.com/polybase/polylang) in Go programming language.
 
@@ -14,9 +14,24 @@ go get github.com/durudex/go-polylang@latest
 
 ## Parser
 
-To start using the Polylang parser, you need to follow the steps below.
+You can use the [`parser`](https://pkg.go.dev/github.com/durudex/go-polylang/parser) package to parse your code. It can be used follow:
 
-1) Create a new parser instance.
+### Parsing files
+
+To parse a file or directory of files, you can use the [`parser.Parse()`](https://pkg.go.dev/github.com/durudex/go-polylang/parser#Parse) function by passing the required file or directory path to its arguments.
+
+```go
+import "github.com/durudex/go-polylang/parser"
+
+func main() {
+    ast, err := parser.Parse("filename.polylang")
+    if err != nil { /* ... */ }
+}
+```
+
+### Custom parser
+
+Currently, we are using the [`participle`](github.com/alecthomas/participle) library for code parsing. However, you can create your own parser by configuring it to meet your specific needs.
 
 ```go
 import (
@@ -31,45 +46,12 @@ func main() {
         participle.Lexer(polylang.Lexer),
     )
 
-    ...
+    // ...
 }
 ```
 
-2) Now you can parse the written code and get the AST.
-
-### With file
-
-```go
-import (
-    "os"
-
-    ...
-)
-
-func main() {
-    ...
-
-    f, err := os.Open(" ... ")
-    if err != nil { ... }
-    defer f.Close()
-
-    ast, err := parser.Parse("", f)
-}
-```
-
-### With string
-
-```go
-import ( ... )
-
-const code = " ... "
-
-func main() {
-    ...
-
-    ast, err := parser.ParseString("", code)
-}
-```
+> Note:
+> If you want to use all the features of the library, you can use our ready-made variable [`Must`](https://pkg.go.dev/github.com/durudex/go-polylang/parser#Must), which contains all of the necessary settings for using the library.
 
 ## License
 
