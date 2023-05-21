@@ -14,16 +14,16 @@ type Collection struct {
 }
 
 type Item struct {
-	Field    *Field    `parser:"@@ ';'"`
-	Function *Function `parser:"| @@"`
-	Index    *Index    `parser:"| @@ ';'"`
+	Decorators []*Decorator `parser:"( @@* )?"`
+	Function   *Function    `parser:"@@"`
+	Field      *Field       `parser:"| @@ ';'"`
+	Index      *Index       `parser:"| @@ ';'"`
 }
 
 type Field struct {
-	Decorators []*Decorator `parser:"( @@* )?"`
-	Name       string       `parser:"@Ident"`
-	Optional   bool         `parser:"@'?'?"`
-	Type       Type         `parser:"':' @@"`
+	Name     string `parser:"@Ident"`
+	Optional bool   `parser:"@'?'?"`
+	Type     Type   `parser:"':' @@"`
 }
 
 type Index struct {
@@ -36,7 +36,6 @@ type IndexField struct {
 }
 
 type Function struct {
-	Decorators []*Decorator `parser:"( @@* )?"`
 	Name       string       `parser:"( 'function' )? @Ident '('"`
 	Parameters []*Field     `parser:"( @@ ( ',' @@ )* )? ')'"`
 	ReturnType Type         `parser:"( ':' @@ )?"`

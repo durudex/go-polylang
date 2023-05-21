@@ -203,14 +203,6 @@ var FieldTests = map[string]struct {
 			Type:     ast.Type{Basic: ast.String},
 		},
 	},
-	"Decorator": {
-		code: "@read name: string",
-		want: &ast.Field{
-			Decorators: []*ast.Decorator{{Name: ast.Read}},
-			Name:       "name",
-			Type:       ast.Type{Basic: ast.String},
-		},
-	},
 }
 
 func TestField(t *testing.T) {
@@ -360,15 +352,6 @@ var FunctionTests = map[string]struct {
 	"Short": {
 		code: "test() {}",
 		want: &ast.Function{Name: "test"},
-	},
-	"Decorator": {
-		code: "@call(owner) function test() {}",
-		want: &ast.Function{
-			Decorators: []*ast.Decorator{
-				{Name: ast.Call, Arguments: []string{"owner"}},
-			},
-			Name: "test",
-		},
 	},
 }
 
