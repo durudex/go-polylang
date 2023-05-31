@@ -12,16 +12,16 @@ import (
 	"os"
 )
 
-func Parse(data []byte) (*Root, error) {
+func Parse(data []byte) (Root, error) {
 	var root Root
 	if err := json.Unmarshal(data, &root); err != nil {
 		return nil, err
 	}
 
-	return &root, nil
+	return root, nil
 }
 
-func ParseFile(path string) (*Root, error) {
+func ParseFile(path string) (Root, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -33,5 +33,5 @@ func ParseFile(path string) (*Root, error) {
 		return nil, err
 	}
 
-	return &root, nil
+	return root, nil
 }
