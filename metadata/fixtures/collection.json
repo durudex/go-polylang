@@ -1,0 +1,121 @@
+[
+  {
+    "kind": "collection",
+    "namespace": {
+      "kind": "namespace",
+      "value": "Program"
+    },
+    "name": "Users",
+    "attributes": [
+      {
+        "kind": "directive",
+        "name": "public",
+        "arguments": []
+      },
+      {
+        "kind": "property",
+        "name": "id",
+        "type": {
+          "kind": "primitive",
+          "value": "string"
+        },
+        "directives": [],
+        "required": true
+      },
+      {
+        "kind": "property",
+        "name": "publicKey",
+        "type": {
+          "kind": "publickey"
+        },
+        "directives": [],
+        "required": true
+      },
+      {
+        "kind": "property",
+        "name": "age",
+        "type": {
+          "kind": "primitive",
+          "value": "number"
+        },
+        "directives": [],
+        "required": false
+      },
+      {
+        "kind": "index",
+        "fields": [
+          {
+            "direction": "asc",
+            "fieldPath": ["age"]
+          }
+        ]
+      },
+      {
+        "kind": "method",
+        "name": "constructor",
+        "attributes": [
+          {
+            "kind": "parameter",
+            "name": "id",
+            "type": {
+              "kind": "primitive",
+              "value": "string"
+            },
+            "required": true
+          },
+          {
+            "kind": "parameter",
+            "name": "age",
+            "type": {
+              "kind": "primitive",
+              "value": "number"
+            },
+            "required": false
+          }
+        ],
+        "code": "this.id = id; this.publickey = ctx.publickey; if (age) this.age = age;"
+      },
+      {
+        "kind": "method",
+        "name": "setAge",
+        "attributes": [
+          {
+            "kind": "directive",
+            "name": "call",
+            "arguments": [
+              {
+                "kind": "fieldreference",
+                "path": ["publicKey"]
+              }
+            ]
+          },
+          {
+            "kind": "parameter",
+            "name": "age",
+            "type": {
+              "kind": "primitive",
+              "value": "number"
+            },
+            "required": true
+          }
+        ],
+        "code": "this.age = age;"
+      },
+      {
+        "kind": "method",
+        "name": "returnValue",
+        "attributes": [
+          {
+            "kind": "returnvalue",
+            "name": "idk",
+            "type": {
+              "kind": "primitive",
+              "value": "number"
+            }
+          }
+        ],
+        "code": "return 146;"
+      }
+    ]
+  }
+]
