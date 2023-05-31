@@ -50,8 +50,49 @@ func main() {
 }
 ```
 
-> Note:
+> **Note:**
 > If you want to use all the features of the library, you can use our ready-made variable [`Must`](https://pkg.go.dev/github.com/durudex/go-polylang/parser#Must), which contains all of the necessary settings for using the library.
+
+## Metadata
+
+To starting using [metadata](https://pkg.go.dev/github.com/durudex/go-polylang/metadata), you need to install the module.
+
+> **Note:**
+> The data of the metadata that you want to parse must be JSON.
+
+**The command to get the module:**
+
+```
+go get github.com/durudex/go-polylang/metadata@latest
+```
+
+### Parsing Metadata
+
+```go
+import "github.com/durudex/go-polylang/metadata"
+
+func main() {
+    rawJsonData := []byte("...")
+
+    root, err := metadata.Parse(rawJsonData)
+    if err != nil { /* ... */ }
+
+    // ...
+}
+```
+
+### Parsing Metadata File
+
+```go
+import "github.com/durudex/go-polylang/metadata"
+
+func main() {
+    root, err := metadata.ParseFile("path/to/file.json")
+    if err != nil { /* ... */ }
+
+    // ...
+}
+```
 
 ## License
 
